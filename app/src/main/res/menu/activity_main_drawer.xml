@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/nav_group_main"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/homeFragment"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/dashboardFragment"
+            android:icon="@drawable/ic_dashboard"
+            android:title="Dashboard" />
+    </group>
+
+    <item android:title="My Training">
+        <menu>
+            <item
+                android:id="@+id/nav_workout_diet"
+                android:icon="@drawable/ic_workout"
+                android:title="Workout Plans" />
+            <item
+                android:id="@+id/nav_add_exercises"
+                android:icon="@drawable/ic_fitness_center"
+                android:title="My Custom Exercises" />
+        </menu>
+    </item>
+
+    <item android:title="Health &amp; Nutrition">
+        <menu>
+            <item
+                android:id="@+id/navigation_food_history"
+                android:icon="@drawable/ic_food"
+                android:title="Food History" />
+            <item
+                android:id="@+id/nav_bmi_calculator"
+                android:icon="@drawable/ic_calculator"
+                android:title="BMI Calculator" />
+        </menu>
+    </item>
+
+    <item android:title="Support">
+        <menu>
+            <item
+                android:id="@+id/trainerListFragment"
+                android:icon="@drawable/ic_people"
+                android:title="Trainers" />
+            <item
+                android:id="@+id/nav_report_conflict"
+                android:icon="@drawable/ic_report_problem"
+                android:title="Report a Conflict" />
+        </menu>
+    </item>
+
+    <item android:title="Account">
+        <menu>
+            <item
+                android:id="@+id/nav_update_profile"
+                android:icon="@drawable/ic_profile"
+                android:title="Update Profile" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu> 

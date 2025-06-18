@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:paddingBottom="56dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/progressCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="8dp"
+
+        android:layout_marginTop="10dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:padding="18dp">
+
+            <!-- Greeting at the top of the card -->
+            <TextView
+                android:id="@+id/greetingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello User !"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/greetingSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Let's start your fitness journey"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                app:layout_constraintTop_toBottomOf="@id/greetingText"
+                app:layout_constraintStart_toStartOf="parent"
+
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Progress Section below greeting -->
+            <TextView
+                android:id="@+id/progressLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today's Progress"
+                android:textColor="#E0E0FF"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintTop_toBottomOf="@id/greetingSubtitle"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/calorieCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1,270 kcal"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintTop_toBottomOf="@id/progressLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="4dp"/>
+
+            <FrameLayout
+                android:id="@+id/progressCircleContainer"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/greetingSubtitle"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/calorieProgressIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:indicatorSize="60dp"
+                    app:trackThickness="7dp"
+                    app:indicatorColor="@android:color/white"
+                    android:progress="0"
+                    android:max="100" />
+
+                <TextView
+                    android:id="@+id/caloriePercentageText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="60%"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Quick Actions as two cards side by side -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/startWorkoutCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:layout_constraintTop_toBottomOf="@id/progressCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/addFoodCard"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp">
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/addFoodCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:layout_constraintTop_toBottomOf="@id/progressCard"
+        app:layout_constraintStart_toEndOf="@id/startWorkoutCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp">
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Recent Activity Title -->
+
+
+    <!-- Conflicts Icon -->
+    <ImageView
+        android:id="@+id/conflictsButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/conflicts_icon"
+
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintTop_toBottomOf="@id/bmiText"
+        app:layout_constraintStart_toStartOf="@id/bmiCalculatorButton"
+        app:layout_constraintEnd_toEndOf="@id/bmiCalculatorButton"
+
+
+        />
+
+    <!-- Conflicts Text -->
+    <TextView
+        android:id="@+id/conflictsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Conflicts"
+        android:textColor="@color/primaryColor"
+        app:layout_constraintStart_toStartOf="@id/conflictsButton"
+        app:layout_constraintTop_toBottomOf="@id/conflictsButton"
+        app:layout_constraintEnd_toEndOf="@id/conflictsButton"
+        android:textSize="15sp"/>
+
+    <!-- Custom Exercises Section -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/customExercisesSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/conflictsText">
+
+        <!-- Section Header -->
+        <TextView
+            android:id="@+id/customExercisesTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="My Custom Exercises"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- Add Exercise Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addExerciseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="Add Exercise"
+            android:textSize="12sp"
+            app:icon="@drawable/ic_add"
+            app:iconSize="16dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- Custom Exercises RecyclerView -->
+
+        <!-- Empty State -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/customExercisesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/customExercisesTitle"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <LinearLayout
+            android:id="@+id/emptyStateLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/customExercisesTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="32dp">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_fitness_center"
+                app:tint="@color/gray"
+                android:alpha="0.5"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No custom exercises yet"
+                android:textColor="@color/gray"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Nutrition Main Icon -->
+    <ImageView
+        android:id="@+id/nutritionMainButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/nutrition_mian_icon"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintTop_toTopOf="@id/conflictsButton"
+        app:layout_constraintStart_toEndOf="@id/conflictsButton"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/nutritionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nutrition"
+        android:textColor="@color/primaryColor"
+        app:layout_constraintStart_toStartOf="@id/nutritionMainButton"
+        app:layout_constraintTop_toBottomOf="@id/nutritionMainButton"
+        app:layout_constraintEnd_toEndOf="@id/nutritionMainButton"
+        android:textSize="15sp"/>
+
+    <!-- BMI Calculator Button -->
+    <ImageView
+        android:id="@+id/bmiCalculatorButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/bmi_calc_main"
+
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintTop_toBottomOf="@id/progressCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/feedbackButton"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:id="@+id/bmiText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BMI Calculator"
+        android:textColor="@color/primaryColor"
+        app:layout_constraintStart_toStartOf="@id/bmiCalculatorButton"
+        app:layout_constraintTop_toBottomOf="@id/bmiCalculatorButton"
+        app:layout_constraintEnd_toEndOf="@id/bmiCalculatorButton"
+        android:textSize="15sp"/>
+
+    <!-- Feedback Icon -->
+    <ImageView
+        android:id="@+id/feedbackButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/feedback_icon"
+
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintTop_toTopOf="@id/bmiCalculatorButton"
+        app:layout_constraintStart_toStartOf="@id/nutritionMainButton"
+
+        app:layout_constraintEnd_toEndOf="@id/nutritionMainButton"/>
+
+    <TextView
+        android:id="@+id/feedbackText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Feedback"
+        android:textColor="@color/primaryColor"
+        app:layout_constraintStart_toStartOf="@id/feedbackButton"
+        app:layout_constraintTop_toBottomOf="@id/feedbackButton"
+        app:layout_constraintEnd_toEndOf="@id/feedbackButton"
+        android:textSize="15sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

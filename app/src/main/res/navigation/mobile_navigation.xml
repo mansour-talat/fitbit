@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_login">
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.su.gym.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_mainActivity"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/nav_registration" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_registration"
+        android:name="com.su.gym.RegistrationFragment"
+        android:label="Registration"
+        tools:layout="@layout/fragment_registration">
+        <action
+            android:id="@+id/action_registrationFragment_to_loginFragment"
+            app:destination="@id/nav_login"
+            app:popUpTo="@id/nav_registration"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registrationFragment_to_mainActivity"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_registration"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.su.gym.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.su.gym.DashboardFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/nav_workout_diet"
+        android:name="com.su.gym.WorkoutDietFragment"
+        android:label="Workout &amp; Diet"
+        tools:layout="@layout/fragment_workout_diet" />
+
+    <fragment
+        android:id="@+id/nav_update_profile"
+        android:name="com.su.gym.UpdateProfileFragment"
+        android:label="Update Profile"
+        tools:layout="@layout/fragment_update_profile" />
+
+    <fragment
+        android:id="@+id/navigation_food_history"
+        android:name="com.su.gym.FoodHistoryFragment"
+        android:label="Food History"
+        tools:layout="@layout/fragment_food_history" />
+
+    <fragment
+        android:id="@+id/trainerListFragment"
+        android:name="com.su.gym.TrainerListFragment"
+        android:label="Trainers"
+        tools:layout="@layout/fragment_trainer_list">
+        <action
+            android:id="@+id/action_trainerListFragment_to_chatFragment"
+            app:destination="@id/chatFragment">
+            <argument
+                android:name="trainerId"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.su.gym.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat">
+        <argument
+            android:name="trainerId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_report_conflict"
+        android:name="com.su.gym.ReportConflictFragment"
+        android:label="Report a Conflict"
+        tools:layout="@layout/fragment_report_conflict" />
+
+</navigation> 

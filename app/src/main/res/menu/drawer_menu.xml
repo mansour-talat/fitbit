@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="Dashboard" />
+
+        <item
+            android:id="@+id/navigation_food_history"
+            android:icon="@drawable/ic_food"
+            android:title="Food History" />
+        <item
+            android:id="@+id/activityHistoryFragment"
+            android:icon="@drawable/ic_history"
+            android:title="Activity History" />
+
+    </group>
+
+    <item android:title="Training">
+        <menu>
+
+            <item
+                android:id="@+id/nav_add_exercises"
+                android:icon="@drawable/ic_fitness_center"
+                android:title="My Custom Exercises" />
+        </menu>
+    </item>
+
+    <item android:title="Support">
+        <menu>
+            <item
+                android:id="@+id/nav_report_conflict"
+                android:icon="@drawable/ic_report_problem"
+                android:title="Report a Conflict" />
+            <item
+                android:id="@+id/feedbackFragment"
+                android:icon="@drawable/ic_feedback"
+                android:title="Send Feedback" />
+        </menu>
+    </item>
+
+    <item android:title="Account">
+        <menu>
+            <item
+                android:id="@+id/updateProfileFragment"
+                android:icon="@drawable/ic_person"
+                android:title="Update Profile" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu> 

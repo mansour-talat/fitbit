@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/historyDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2024-01-01"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/historyStepsText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Steps: 0" />
+
+        <TextView
+            android:id="@+id/historyDistanceText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Distance: 0.00 m" />
+            </LinearLayout>
+
+            <LinearLayout
+        android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp">
+
+                <TextView
+            android:id="@+id/historyCaloriesText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Calories: 0.00" />
+
+                <TextView
+            android:id="@+id/historyDurationText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Duration: 00:00:00" />
+    </LinearLayout>
+</LinearLayout> 

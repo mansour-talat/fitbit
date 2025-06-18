@@ -1,0 +1,392 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isUser(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isTrainer() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'trainer';
+    }
+
+    function isValidDate(ts) {
+      return ts is timestamp &&
+        ts.seconds > 0 &&
+        ts.seconds < request.time.seconds + 86400; // Not more than 24h in the future
+    }
+
+    function isValidString(str) {
+      return str is string && str.size() > 0 && str.size() < 1000;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches('^[^@]+@[^@]+\\.[^@]+$');
+    }
+
+    function isValidPhoneNumber(phone) {
+      return phone is string && phone.matches('^\\+?[1-9]\\d{1,14}$');
+    }
+
+    function isValidImageUrl(url) {
+      return url is string && (
+        url.matches('^https?://.+') &&
+        (url.matches('\\.jpg$') || url.matches('\\.jpeg$') || url.matches('\\.png$') || url.matches('\\.gif$'))
+      );
+    }
+
+    function isValidWorkoutData(data) {
+      return data is map &&
+        isValidString(data.name) &&
+        isValidString(data.description) &&
+        data.difficulty in ['beginner', 'intermediate', 'advanced'] &&
+        (!('gifUrl' in data) || isValidImageUrl(data.gifUrl));
+    }
+
+    function isValidUserData(data) {
+      return data is map &&
+        isValidString(data.displayName) &&
+        isValidEmail(data.email) &&
+        (!('phoneNumber' in data) || isValidPhoneNumber(data.phoneNumber)) &&
+        (!('photoURL' in data) || isValidImageUrl(data.photoURL));
+    }
+
+    function hasValidTimestamp(data) {
+      return data.updatedAt is timestamp;
+    }
+
+    function isValidChatMessage(data) {
+      return data is map &&
+        isValidString(data.message) &&
+        data.senderId is string &&
+        (data.timestamp is timestamp || data.timestamp is number) &&
+        (data.timestamp is timestamp ? data.timestamp <= request.time : true);
+    }
+
+    function canAccessChat(chatData) {
+      return chatData.participants.hasAny([request.auth.uid]) || isAdmin() || isTrainer();
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Workouts collection
+    match /workouts/{workoutId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && (isAdmin() || isTrainer()) &&
+        isValidWorkoutData(request.resource.data) &&
+        request.resource.data.trainerId == request.auth.uid &&
+        hasValidTimestamp(request.resource.data);
+      allow update: if isSignedIn() &&
+        (isAdmin() || resource.data.trainerId == request.auth.uid) &&
+        isValidWorkoutData(request.resource.data) &&
+        request.resource.data.trainerId == resource.data.trainerId;
+      allow delete: if isAdmin();
+    }
+
+    // Activity collection - Updated rules
+    match /activity/{document=**} {
+      allow read: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin() || isTrainer());
+      allow create: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin() &&
+        hasValidTimestamp(request.resource.data);
+    }
+
+    // Alerts collection
+    match /alerts/{alertId} {
+      allow read: if true;  // Allow reading alerts without authentication
+      allow create: if true;  // Allow creating alerts without authentication
+      allow update: if isSignedIn() && (
+        isAdmin() || 
+        isTrainer() || 
+        resource.data.userId == request.auth.uid
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Chats collection
+    match /chats/{chatId} {
+      allow read: if isSignedIn();
+      
+      allow create: if isSignedIn() && (
+        request.resource.data.participants.hasAny([request.auth.uid]) ||
+        isTrainer()
+      );
+      
+      allow update: if isSignedIn() && (
+        resource.data.participants.hasAny([request.auth.uid]) ||
+        isTrainer()
+      );
+      
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && (
+          get(/databases/$(database)/documents/chats/$(chatId)).data.participants.hasAny([request.auth.uid]) ||
+          isTrainer()
+        );
+        
+        allow create: if isSignedIn() && 
+          request.resource.data.senderId == request.auth.uid && (
+            get(/databases/$(database)/documents/chats/$(chatId)).data.participants.hasAny([request.auth.uid]) ||
+            isTrainer()
+          );
+        
+        allow update: if false;
+        
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Chat rooms collection
+    match /chat_rooms/{roomId} {
+      allow read: if isSignedIn() &&
+        (isAdmin() || 
+         resource.data.trainerId == request.auth.uid || 
+         resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() &&
+        isValidString(request.resource.data.name) &&
+        hasValidTimestamp(request.resource.data);
+      allow update: if isSignedIn() &&
+        (isAdmin() || 
+         resource.data.trainerId == request.auth.uid || 
+         resource.data.userId == request.auth.uid) &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['name', 'updatedAt', 'lastMessage', 'lastMessageTime']);
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn() &&
+          get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.participants.hasAny([request.auth.uid]);
+        allow create: if isSignedIn() &&
+          get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.participants.hasAny([request.auth.uid]) &&
+          request.resource.data.senderId == request.auth.uid &&
+          isValidChatMessage(request.resource.data);
+        allow update: if false;  // Messages cannot be edited
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Conflicts collection
+    match /conflicts/{conflictId} {
+      allow read: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin()) &&
+         request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['status', 'updatedAt', 'resolvedAt', 'resolvedBy']);
+      allow delete: if isAdmin();
+    }
+
+    // Nutrition collection - Updated rules
+    match /nutrition/{document=**} {
+      allow read: if isSignedIn() && (
+        resource.data.userId == request.auth.uid || 
+        isAdmin() || 
+        isTrainer()
+      );
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        resource.data.userId == request.auth.uid || 
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.userId == request.auth.uid || 
+        isAdmin()
+      );
+    }
+
+    // Nutrition plans collection
+    match /nutrition-plans/{planId} {
+      allow read: if isSignedIn();  // Allow all signed-in users to read plans
+      allow create: if isSignedIn() && (isAdmin() || isTrainer());
+      allow update: if isSignedIn() &&
+        (isAdmin() || resource.data.trainerId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // Progress collection
+    match /progress/{document=**} {
+      allow read: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin() || isTrainer());
+      allow write: if isSignedIn() &&
+        (request.resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Reports collection
+    match /reports/{reportId} {
+      allow read: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin() || isTrainer());
+      allow create: if isSignedIn() && (isAdmin() || isTrainer());
+      allow update: if isSignedIn() &&
+        (isAdmin() || resource.data.trainerId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // Resolutions collection
+    match /resolutions/{resolutionId} {
+      allow read: if isSignedIn() &&
+        (isAdmin() ||
+         resource.data.userId == request.auth.uid ||
+         resource.data.trainerId == request.auth.uid);
+      allow create: if isSignedIn() && 
+        (isAdmin() || 
+         isTrainer() || 
+         request.resource.data.trainerId == request.auth.uid);
+      allow update: if isSignedIn() &&
+        (isAdmin() || 
+         resource.data.trainerId == request.auth.uid ||
+         request.resource.data.diff(resource.data).affectedKeys()
+           .hasOnly(['status', 'updatedAt']));
+      allow delete: if isAdmin();
+    }
+
+    // Support collection
+    match /support/{ticketId} {
+      allow read: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Trainer collection (singular)
+    match /trainer/{trainerId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (
+        trainerId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Trainers collection (plural)
+    match /trainers/{trainerId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (
+        trainerId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Trainer applications collection
+    match /trainer_applications/{applicationId} {
+      allow read: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Trainer clients collection
+    match /trainer_clients/{trainerId} {
+      allow read: if isSignedIn() &&
+        (trainerId == request.auth.uid || isAdmin());
+      allow write: if isSignedIn() &&
+        (trainerId == request.auth.uid || isAdmin());
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() || isAdmin();
+      allow update: if isSignedIn() &&
+        (userId == request.auth.uid || isAdmin()) &&
+        (
+          // Allow updating nutrition limits and other user data
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['caloriesLimit', 'proteinLimit', 'carbsLimit', 'fatLimit', 'name', 'email', 'updatedAt']) ||
+          // Only admin can update role and permissions
+          (request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'permissions']) && isAdmin())
+        );
+      allow delete: if isAdmin();
+
+      match /settings/{setting} {
+        allow read: if isUser(userId);
+        allow write: if isUser(userId) &&
+          hasValidTimestamp(request.resource.data);
+      }
+
+      match /notifications/{notificationId} {
+        allow read: if isUser(userId);
+        allow create: if isAdmin() || isTrainer();
+        allow update: if isUser(userId) ||
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt', 'updatedAt']);
+        allow delete: if isUser(userId) || isAdmin();
+      }
+    }
+
+    // Workout plans collection
+    match /workout-plans/{planId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        isAdmin() || 
+        resource.data.trainerId == request.auth.uid
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Feedback collection
+    match /feedback/{feedbackId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (isAdmin() || isUser(resource.data.userId));
+      allow delete: if isSignedIn() && isAdmin();
+    }
+
+    // Login attempts collection
+    match /login_attempts/{attemptId} {
+      allow read: if true;  // Allow reading login attempts for security checks
+      allow create: if true;  // Allow creating login attempts without authentication
+      allow update, delete: if isAdmin();
+    }
+
+    // Custom Exercises Collection
+    match /custom_exercises/{exerciseId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Workout History Collection
+    match /workout_history/{historyId} {
+      allow read, write: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    // Exercise Progress Collection
+    match /exercise_progress/{progressId} {
+      allow read, write: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

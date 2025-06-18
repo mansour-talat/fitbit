@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_trainer_home"
+            android:icon="@drawable/baseline_home_24"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_trainer_clients"
+            android:icon="@drawable/baseline_people_24"
+            android:title="My Clients" />
+        <item
+            android:id="@+id/nav_trainer_schedule"
+            android:icon="@drawable/baseline_calendar_month_24"
+            android:title="Schedule" />
+        <item
+            android:id="@+id/nav_trainer_profile"
+            android:icon="@drawable/baseline_person_24"
+            android:title="Profile" />
+    </group>
+
+    <item android:title="Account">
+        <menu>
+            <item
+                android:id="@+id/nav_trainer_logout"
+                android:icon="@drawable/baseline_logout_24"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu> 

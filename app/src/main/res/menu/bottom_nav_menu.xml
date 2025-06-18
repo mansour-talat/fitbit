@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mainScreenFragment"
+        android:icon="@drawable/fhome"
+        android:title="Home"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/navigation_chatbot"
+        android:icon="@drawable/chatbot_icon"
+        android:title="AI Assistant"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/trainerListFragment"
+        android:icon="@drawable/ic_people"
+        android:title="Trainers"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/workoutDietFragment"
+        android:icon="@drawable/plans_icon"
+        android:title="Plans"
+        app:showAsAction="ifRoom" />
+
+
+
+
+</menu> 

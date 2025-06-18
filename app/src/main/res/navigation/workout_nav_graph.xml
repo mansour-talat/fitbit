@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/workout_nav_graph"
+    app:startDestination="@id/workoutPlansFragment">
+
+    <fragment
+        android:id="@+id/workoutPlansFragment"
+        android:name="com.su.gym.WorkoutPlansFragment"
+        android:label="Workout Plans"
+        tools:layout="@layout/fragment_workout_plans" />
+
+    <fragment
+        android:id="@+id/nutritionPlansFragment"
+        android:name="com.su.gym.NutritionPlansFragment"
+        android:label="Nutrition Plans"
+        tools:layout="@layout/fragment_nutrition_plans">
+        <action
+            android:id="@+id/action_nutritionPlansFragment_to_nutritionPlanDetailsFragment"
+            app:destination="@id/nutritionPlanDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nutritionPlanDetailsFragment"
+        android:name="com.su.gym.NutritionPlanDetailsFragment"
+        android:label="Plan Details"
+        tools:layout="@layout/fragment_nutrition_plan_details">
+        <argument
+            android:name="planId"
+            app:argType="string" />
+    </fragment>
+
+</navigation> 

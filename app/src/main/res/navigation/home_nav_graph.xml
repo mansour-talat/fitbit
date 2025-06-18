@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/mainScreenFragment">
+
+    <fragment
+        android:id="@+id/mainScreenFragment"
+        android:name="com.su.gym.MainScreenFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_main_screen" />
+
+    <fragment
+        android:id="@+id/workoutDietFragment"
+        android:name="com.su.gym.WorkoutDietFragment"
+        android:label="Workout &amp; Diet"
+        tools:layout="@layout/fragment_workout_diet">
+        <action
+            android:id="@+id/action_workoutDietFragment_self"
+            app:destination="@id/workoutDietFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/trainerListFragment"
+        android:name="com.su.gym.TrainerListFragment"
+        android:label="Choose Trainer"
+        tools:layout="@layout/fragment_trainer_list">
+        <action
+            android:id="@+id/action_trainerListFragment_to_trainerChatFragment"
+            app:destination="@id/trainerChatFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/trainerChatFragment"
+        android:name="com.su.gym.TrainerChatFragment"
+        android:label="Chat with Trainer"
+        tools:layout="@layout/fragment_trainer_chat">
+        <argument
+            android:name="userId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+
+</navigation> 

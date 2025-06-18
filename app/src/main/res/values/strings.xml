@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gym</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="full_name_hint">Full Name</string>
+    <string name="gym_app_title">Gym App</string>
+    <string name="registration_title">Registration</string>
+    <string name="login_prompt">Don\'t have an account? Register here</string>
+    <string name="register_prompt">Already have an account? Login here</string>
+    <string name="nav_header_title">Gym App</string>
+    <string name="nav_header_subtitle">Welcome to your fitness journey</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="trainer_header">Trainer Dashboard</string>
+    <string name="add_client">Add Client</string>
+    <string name="no_clients">No clients found</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="my_clients">My Clients</string>
+    <string name="no_clients_found">No clients found</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+</resources>

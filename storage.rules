@@ -1,0 +1,73 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        firestore.exists(/databases/(default)/documents/admin/$(request.auth.uid));
+    }
+
+    function isTrainer() {
+      return isAuthenticated() && 
+        firestore.exists(/databases/(default)/documents/trainer/$(request.auth.uid));
+    }
+
+    // Profile images for all users
+    match /profile_images/{userId}/{imageId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && 
+                  request.auth.uid == userId &&
+                  request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                  request.resource.contentType.matches('image/.*');
+    }
+
+    // Trainer profile images
+    match /trainer_images/{trainerId}/{imageId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && 
+                  (request.auth.uid == trainerId || isAdmin()) &&
+                  request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                  request.resource.contentType.matches('image/.*');
+    }
+
+    // Trainer application documents (CV, certificates)
+    match /trainer_applications/{userId}/{fileName} {
+      allow read: if isAuthenticated() && 
+                 (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && 
+                  request.auth.uid == userId &&
+                  request.resource.size < 10 * 1024 * 1024 && // 10MB max
+                  request.resource.contentType.matches('application/pdf');
+    }
+
+    // Exercise images (only admin can upload)
+    match /exercise_images/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin() &&
+                  request.resource.size < 2 * 1024 * 1024 && // 2MB max
+                  request.resource.contentType.matches('image/.*');
+    }
+
+    // Workout progress images
+    match /workout_progress/{userId}/{imageId} {
+      allow read: if isAuthenticated() && 
+                 (request.auth.uid == userId || 
+                  isTrainer() || 
+                  isAdmin());
+      allow write: if isAuthenticated() && 
+                  request.auth.uid == userId &&
+                  request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                  request.resource.contentType.matches('image/.*');
+    }
+
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+} 
